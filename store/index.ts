@@ -4,8 +4,10 @@ import { configureStore } from '@reduxjs/toolkit'
 
 import rootReducer from './reducers'
 
-const makeStore: MakeStore = (context: Context) => configureStore({
+export const rootStore = configureStore({
   reducer: rootReducer,
 })
+
+const makeStore: MakeStore = (context: Context) => rootStore
 
 export const wrapper = createWrapper(makeStore)

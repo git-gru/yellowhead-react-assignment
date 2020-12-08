@@ -5,14 +5,14 @@ export const loginWithEmail = createAsyncThunk(
   'users/loginWithEmail',
   async (credential: any, { getState }) => {
     const { email, password } = credential
-    const response = await API({
+    return await API({
       endpoint: '/users/login',
       method: 'POST',
       query: {
         email,
         password
-      }
+      },
+      withoutAuthorization: true
     }, getState)
-    return response
   }
 )

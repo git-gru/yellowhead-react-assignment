@@ -1,65 +1,89 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router'
+import { useDispatch, useSelector } from 'react-redux'
+import { Formik, FormikHelpers } from 'formik';
 
-export default function Home() {
+import { loginWithEmail } from '../store/actions/auth'
+import { getToken } from '../store/selectors/auth'
+
+const validateEmail = (values: yellowhead.Credential) => {
+  if (!values.email) {
+    return {
+      email: 'Required'
+    };
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+  ) {
+    return {
+      email: 'Invalid email address'
+    }
+  }
+  return {}
+}
+
+const LogIn = () => {
+  const dispatch = useDispatch()
+  const router = useRouter()
+  const token = useSelector(getToken)
+
+  const initialValues: yellowhead.Credential = { email: '', password: '' };
+
+  const onSubmit = async (credential: yellowhead.Credential, { setSubmitting }: FormikHelpers<yellowhead.Credential>) => {
+    dispatch(loginWithEmail(credential)).then(() => setSubmitting(false))
+  }
+
+  // For auto login
+  // useEffect(() => {
+  //   dispatch(loginWithEmail({ email: "yariv@nerdeez.com", password: '12345678' }))
+  // }, [dispatch])
+
+  useEffect(() => {
+    if (token) {
+      router.push('/todo')
+    }
+  }, [router, token])
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div>
+      <Formik
+        initialValues={initialValues}
+        validate={validateEmail}
+        onSubmit={onSubmit}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          isSubmitting,
+        }) => (
+            <form onSubmit={handleSubmit}>
+              <input
+                type="email"
+                name="email"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.email}
+              />
+              {errors.email && touched.email && errors.email}
+              <input
+                type="password"
+                name="password"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.password}
+              />
+              {errors.password && touched.password && errors.password}
+              <button type="submit" disabled={isSubmitting}>
+                Submit
+              </button>
+            </form>
+          )}
+      </Formik>
     </div>
   )
 }
+
+export default LogIn;

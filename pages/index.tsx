@@ -29,7 +29,7 @@ const LogIn = () => {
   const initialValues: yellowhead.Credential = { email: '', password: '' };
 
   const onSubmit = async (credential: yellowhead.Credential, { setSubmitting }: FormikHelpers<yellowhead.Credential>) => {
-    dispatch(loginWithEmail(credential)).then(() => setSubmitting(false))
+    dispatch(loginWithEmail(credential))
   }
 
   // For auto login

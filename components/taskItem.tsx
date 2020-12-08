@@ -1,4 +1,4 @@
-const TaskItem = ({ title, description, createdAt, updatedAt }: yellowhead.Todo) => (
+const TaskItem = ({ todo: { title, description, createdAt, updatedAt } }: { todo: yellowhead.Todo }) => (
   <div className='task-item'>
     <span>{title}</span>
     <span>{description}</span>

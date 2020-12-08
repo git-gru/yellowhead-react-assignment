@@ -23,7 +23,7 @@ const ToDoList = () => {
 
   return (
     <div className='tasks-view'>
-      {todoList.map(t => <TaskItem key={t.id} title={t.title} description={t.description} createdAt={t.createdAt} updatedAt={t.updatedAt} />)}
+      {todoList.map(t => <TaskItem key={t.id} todo={t} />)}
     </div>
   )
 }
